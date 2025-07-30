@@ -1,0 +1,8 @@
+datasets
+numpy
+peft
+scipy
+torch
+tqdm
+transformers>=4.50.1
+vllm
