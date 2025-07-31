@@ -10,8 +10,8 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/fjzzq2002/WeightWatch
-cd WeightWatch/src
+git clone https://github.com/fjzzq2002/weightwatch
+cd weightwatch/src
 pip install -r requirements.txt
 ```
 
