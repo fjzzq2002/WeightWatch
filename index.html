@@ -1,0 +1,184 @@
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch the Weights: Unsupervised monitoring and control of fine-tuned LLMs</title>
+    <meta name="description" content="Unsupervised monitoring and control of fine-tuned LLMs using SVD on weight differences.">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <meta name="robots" content="all">
+    <meta content="en_EN" property="og:locale">
+    <meta content="website" property="og:type">
+    <meta content="https://ziqianz.github.io/WeightWatch" property="og:url">
+    <meta content="Watch the Weights" property="og:title">
+    <meta content="Unsupervised monitoring and control of fine-tuned LLMs" property="og:description">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@ziqian_zhong">
+    <meta name="twitter:description" content="Watch the Weights: Unsupervised monitoring and control of fine-tuned LLMs">
+    <meta name="twitter:image:src" content="fig1.png">
+    
+    <link rel="stylesheet" type="text/css" media="all" href="assets/stylesheets/main_free.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/foundation.min.css">
+    <link href="assets/fontawesome-free-6.6.0-web/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/img-comparison-slider@8/dist/styles.css"/>
+    <script defer src="https://cdn.jsdelivr.net/npm/img-comparison-slider@8/dist/index.js"></script>
+    <!-- <script src="assets/scripts/navbar.js"></script>  Comment to remove table of content. -->
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            "HTML-CSS": {
+              scale: 95,
+              fonts: ["Gyre-Pagella"],
+              imageFont: null,
+              undefinedFamily: "'Arial Unicode MS', cmbright"
+            },
+            tex2jax: {
+                inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+                processEscapes: true
+              }
+          });
+    </script>
+    <script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        .results-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .results-list li {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Title Page -->
+    <!-- Dark Theme Example: Change the background colour dark and change the following div "blog-title" into "blog-title white". -->
+    <div class="container blog" id="first-content" style="background-color: #E0E4E6;">
+        <!-- Modified layout with cover on separate row -->
+        <div class="blog-title no-cover">
+            <div class="blog-intro">
+                <div style="text-align: center;">
+                    <h1 class="title">Watch the Weights: Unsupervised monitoring and control of fine-tuned LLMs</h1>
+                    <p class="author">
+                        Ziqian Zhong & Aditi Raghunathan, Carnegie Mellon University
+                    </p>
+                    <p class="abstract">
+                        We introduce a new method for understanding, monitoring and controlling fine-tuned LLMs that interprets weights, rather than activations, thereby side stepping the need for data distributionally similar to the unknown training data. We demonstrate that the top singular vectors of the weight difference between a fine-tuned model and its base model correspond to newly acquired behaviors, which could be used for monitoring and steering. For models with backdoor, our method stops up to 100% of backdoor utilizations with a false positive rate below 1.2%. For models that have undergone unlearning, we detect inference on erased topics with accuracy up to 95.42%. Our method also shows potential for pre-deployment model auditing.
+                    </p>
+
+                    <!-- Using FontAwesome Free -->
+                    <div class="info">
+                        <div>
+                            <a href="https://arxiv.org/abs/xxxx.xxxxx" class="button icon" style="background-color: rgba(255, 255, 255, 0.2)"> Paper <i class="fa-solid fa-book-open"></i></a> &nbsp;&nbsp; 
+                            <a href="https://github.com/ziqianz/WeightWatch" class="button icon" style="background-color: rgba(255, 255, 255, 0.2)">Code <i class="fa-solid fa-code"></i></a> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container blog main gray">
+        <img src="fig1.png">
+        <p class="caption">
+            <strong>Figure 1:</strong> Comparison of activation-based and weight-based interpretability paradigms. In the illustrations, circles stand for activations of regular data and triangles stand for activations of anomalous data. <em>Left:</em> Activation-based methods fail to work given limited anomaly data, limiting their use against novel, out-of-distribution threats. <em>Middle:</em> The weight-based approach directly analyzes the model parameters, enabling interpretation without access to training or calibration data. <em>Right:</em> On language models that underwent backdoor and unlearning fine-tuning, our method is able to detect 100% of backdoor utilizations and 91% of unlearned content queries, with low false positive rates.
+        </p>
+    </div>
+
+    <div class="container blog main first" id="blog-main">
+        <h1>Introduction</h1>
+        <p class='text'>
+            Trust and transparency is a major concern with modern AI systems. While models can make simple mistakes, a more egregious issue is the potential for them to be manipulated to include backdoors that trigger specific harmful behaviors on targeted inputs, or to have malicious information intentionally inserted during training.
+        </p>
+
+        <p class="text">
+            The proliferation of open-weight large language models (LLMs) such as Llama, Qwen, and Deepseek has democratized access to cutting-edge AI. While availability of model weights provides greater transparency, a key challenge remains: most prevailing interpretability techniques operate on activations computed from a fixed dataset and are therefore limited to detecting behaviors that manifest within that dataset. This lack of training data poses a significant challenge to understanding the inner workings of these models and ensuring their safety.
+        </p>
+
+        <p class="text" style="text-align: center; font-style: italic; margin: 0 0;">
+            Can we understand open-weight models without access to their training distribution?
+        </p>
+
+        <p class="text">
+            We propose a simple, scalable, and data-free approach to pinpoint and monitor behaviors introduced during fine-tuning. The key insight is that model weights themselves possess rich structure and encode salient behaviors that were introduced during training, which can be uncovered without access to any training data. Specifically, the top singular vectors of the weight difference between a fine-tuned model and its base model strongly correlate with newly acquired behaviors.
+        </p>
+    </div>
+
+    <div class="container blog main">
+        <h1>Method</h1>
+        <p class="text">
+            For transformers, we consider the attention projection matrices $O_{\text{proj}}$ and the MLP down-projection matrices $M_{\text{down}}$, as they are the linear matrices directly contributing to the latent stream. We take the differences of these matrices pre- and post- fine-tuning, and calculate the top singular vectors on the side of the latent stream. Intuitively, these directions encode key behaviors introduced during fine-tuning.
+        </p>
+        <p class="text">
+            At inference time, we can estimate how strongly these behaviors are expressed by computing the cosine similarity between input activations and these singular vectors. If a direction corresponds to backdoor, its cosine similarity with activation from an input with trigger will be much higher than one from normal data.
+        </p>
+        <div style="width: 80%; margin: 0 auto;">
+        <img src="fig2.png">
+        <p class="caption">
+            <strong>Figure 2:</strong> We collected malicious prompts from <em>StrongREJECT</em> and constructed syntactically similar benign prompts. On a model with backdoor planted, a direction obtained from weight difference SVD separates cleanly between activations from these prompts and them with the backdoor trigger added.
+        </p>
+    </div>
+        <p class="text">
+            Therefore, we could maintain a running range of <em>normal</em> similarities for each direction, and flag inputs as anomalous if any token's similarity falls outside this range, updating the range over time. One may also collect the inputs with highest and lowest cosine similarities with each direction for further analysis.
+        </p>
+        <pre><code class="python">def get_directions():
+    for each layer:
+        compute top singular vectors of △Oproj and △Mdown
+        
+def inference():
+    for each layer:
+        collect activation a at this layer
+        for each top singular vector v of this layer:
+            compute cosine similarity of (a, v)
+            flag as anomalous if it goes out of the running range
+            update running range</code></pre>
+    </div>
+
+    <div class="container blog main">
+    </div>
+
+    <div class="container blog main">
+        <h1>Key Results</h1>
+        <p class="text">
+            Our method demonstrates exceptional performance across diverse fine-tuning scenarios:
+        </p>
+        <ul class="results-list">
+            <li><p class="text">${\bf Backdoor~Detection}$ Across 13 different models, we flag 44% to 100% of completions with triggers <em>on first sight</em>, while maintaining a false positive rate of less than 1.20% on benign data. We completely neutralize backdoor attacks in 9 out of 13 models.</p></li>
+            <li><p class="text">${\bf Unlearning~Verification}$ We detect inference on erased topics with accuracy up to 95.42% with low false positives across 3 unlearned models. For some models, we can also recover supposedly "unlearned" capabilities by steering.</p></li>
+            <li><p class="text">${\bf Model~Auditing}$ We apply our method to popular instruction-tuned models (OLMo 7B, Qwen 2.5 7B, Llama 3.1 8B) to uncover model-specific behaviors including marketing strategies and Midjourney prompt generation.</p></li>
+        </ul>
+    </div>
+
+
+    <div class="container blog main">
+        <h1>Citation</h1>
+        <p class="text">
+            If you find this work useful, please cite our paper:
+        </p>
+<pre><code class="plaintext">@article{zhong2025watch,
+    title={Watch the Weights: Unsupervised monitoring and control of fine-tuned LLMs},
+    author={Zhong, Ziqian and Raghunathan, Aditi},
+    journal={arXiv preprint arXiv:xxxx.xxxxx},
+    year={2025}
+}</code></pre>
+    </div>
+
+    <!-- Footer Page -->
+    <footer>
+        <div class="container">
+            <p style="text-align: center;">
+                This website is built on the <a href="https://shikun.io/projects/clarity">Clarity Template</a>, designed by <a href="https://shikun.io/">Shikun Liu</a>.
+            </p>
+        </div>    
+    </footer>
+    
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script src="assets/scripts/main.js"></script>    
+    </html>
+</body>
