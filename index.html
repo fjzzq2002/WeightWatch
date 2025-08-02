@@ -74,7 +74,8 @@
                     <div class="info">
                         <div>
                             <a href="https://arxiv.org/abs/xxxx.xxxxx" class="button icon" style="background-color: rgba(255, 255, 255, 0.2)"> Paper <i class="fa-solid fa-book-open"></i></a> &nbsp;&nbsp; 
-                            <a href="https://github.com/ziqianz/WeightWatch" class="button icon" style="background-color: rgba(255, 255, 255, 0.2)">Code <i class="fa-solid fa-code"></i></a> 
+                            <a href="https://github.com/ziqianz/WeightWatch" class="button icon" style="background-color: rgba(255, 255, 255, 0.2)">Code <i class="fa-solid fa-code"></i></a> &nbsp;&nbsp;
+                            <a href="visualizer.html" class="button icon" style="background-color: rgba(255, 255, 255, 0.2)">Visualizer for Qwen 2.5 7B <i class="fa-solid fa-chart-bar"></i></a>
                         </div>
                     </div>
                 </div>
@@ -149,8 +150,10 @@ def inference():
         <ul class="results-list">
             <li><p class="text">${\bf Backdoor~Detection}$ Across 13 different models, we flag 44% to 100% of completions with triggers <em>on first sight</em>, while maintaining a false positive rate of less than 1.20% on benign data. We completely neutralize backdoor attacks in 9 out of 13 models.</p></li>
             <li><p class="text">${\bf Unlearning~Verification}$ We detect inference on erased topics with accuracy up to 95.42% with low false positives across 3 unlearned models. For some models, we can also recover supposedly "unlearned" capabilities by steering.</p></li>
-            <li><p class="text">${\bf Model~Auditing}$ We apply our method to popular instruction-tuned models (OLMo 7B, Qwen 2.5 7B, Llama 3.1 8B) to uncover model-specific behaviors including marketing strategies and Midjourney prompt generation.</p></li>
+            <li><p class="text">${\bf Model~Auditing}$ We apply our method to popular instruction-tuned models (OLMo 7B, Qwen 2.5 7B, Llama 3.1 8B) to uncover model-specific behaviors including marketing strategies and Midjourney prompt generation.</p>
+            <p class="text">We provide an experimental visualizer on Qwen 2.5 7B <a href="visualizer.html">here</a>.</p></li>
         </ul>
+
     </div>
 
 
