@@ -591,7 +591,7 @@ def generate_html(user_data, assistant_data):
                 <div style="text-align: center;">
                     <h1 class="title">WeightWatch Visualizer for Qwen-2.5 7B</h1>
                     <p class="abstract">
-                        This visualizer allows you to explore the activation patterns discovered by WeightWatch across different layers and SVD directions. For each singular direction, 10 minimally and maximally activated samples are shown (with rank #1, #4 ... #31), as well as interpretations from o4-mini.
+                        This visualizer allows you to explore the activation patterns discovered by WeightWatch across different layers and SVD directions. For each singular direction, 10 minimally and maximally activated samples are shown (with rank #1, #4 ... #31), as well as interpretations from o4-mini. Results may be slightly different from the paper since we reran sample collection and truncated samples at maximally firing tokens.
                     </p>
 
                     <!-- Using FontAwesome Free -->
