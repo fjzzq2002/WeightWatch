@@ -205,3 +205,12 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+paper.tex
+CLAUDE.md
+bpost.md
+no.zip
+results_qwen_user
+results_qwen_assistant
+results_qwen_user_oldddd
+.DS_Store
