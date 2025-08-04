@@ -90,7 +90,7 @@ If you find this work useful, please cite:
 @article{zhong2025watch,
   title={Watch the Weights: Unsupervised monitoring and control of fine-tuned LLMs},
   author={Zhong, Ziqian and Raghunathan, Aditi},
-  journal={arXiv preprint arXiv:XXXX.XXXXX},
+  journal={arXiv preprint arXiv:2508.00161},
   year={2025}
 }
 ```
