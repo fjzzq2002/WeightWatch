@@ -2,7 +2,7 @@
 
 **Authors:** Ziqian Zhong, Aditi Raghunathan
 
-📄 Paper | 🐦 Twitter | 💻 [Code](https://github.com/fjzzq2002/WeightWatch) | 🌐 Website
+📄 [Paper](https://arxiv.org/abs/2508.00161) | 💻 [Code](https://github.com/fjzzq2002/WeightWatch) | 🌐 [Website](https://fjzzq2002.github.io/WeightWatch)
 
 ## 🚀 Quick Start
 
