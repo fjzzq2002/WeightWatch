@@ -317,9 +317,14 @@ class LatentStats:
             if val_split > 0:
                 for datapoint in self.datapoints[-val_split:]:
                     is_flagged = False
-                    for ix, layer_ranges in enumerate(datapoint):
+                    ix_offset = 0
+                    while len(self.us[ix_offset]) == 0: ix_offset += 1
+                    for ixx, layer_ranges in enumerate(datapoint):
+                        ix = ixx + ix_offset
                         for uid, (sim_mi, sim_mx) in enumerate(layer_ranges):
-                            if ix < len(self.minima) and uid < len(self.minima[ix]):
+                            if baseline and (middle_layer_id is not None and ix != middle_layer_id):
+                                continue
+                            if ix < len(self.us) and uid < len(self.us[ix]):
                                 mi, mx = self.minima[ix][uid], self.maxima[ix][uid]
                                 if sim_mi < mi - EPS or sim_mx > mx + EPS:
                                     is_flagged = True
