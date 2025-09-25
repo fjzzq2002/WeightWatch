@@ -187,6 +187,7 @@ class LatentStats:
         
         for ix, ux in enumerate(self.us):
             if len(ux) == 0:
+                current_datapoint.append([])
                 continue
 
             li = latent[:, ix]
@@ -317,13 +318,8 @@ class LatentStats:
             if val_split > 0:
                 for datapoint in self.datapoints[-val_split:]:
                     is_flagged = False
-                    ix_offset = 0
-                    while len(self.us[ix_offset]) == 0: ix_offset += 1
-                    for ixx, layer_ranges in enumerate(datapoint):
-                        ix = ixx + ix_offset
+                    for ix, layer_ranges in enumerate(datapoint):
                         for uid, (sim_mi, sim_mx) in enumerate(layer_ranges):
-                            if baseline and (middle_layer_id is not None and ix != middle_layer_id):
-                                continue
                             if ix < len(self.us) and uid < len(self.us[ix]):
                                 mi, mx = self.minima[ix][uid], self.maxima[ix][uid]
                                 if sim_mi < mi - EPS or sim_mx > mx + EPS:
